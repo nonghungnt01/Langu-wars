@@ -51,8 +51,20 @@ Có: dashboard, 8 nền văn minh hư cấu, chuyển ngôn ngữ, đọc mẫu 
 
 Bài nhập môn chỉ có 1 câu/ngôn ngữ. Mỗi ngôn ngữ thưởng tối đa một lần/ngày UTC. Luyện tập lại vẫn được chấm nhưng nhận 0 XP/Gold. Nhiệm vụ chỉ tính bài có XP; thưởng tự động là 10 Gold cho 1 bài và 25 Gold cho 3 bài. Danh sách nhiệm vụ trong UI phản ánh dữ liệu tài khoản khi đăng nhập. Không có mua sức mạnh, thanh toán, chiến tranh hay người chơi giả.
 
-Chưa có: đánh giá trình độ, thư viện bài phong phú, chấm nói, bài nghe chuyên biệt, grammar/reading, streak server, khôi phục mật khẩu, social login, realtime, Kingdom/War/Guild, và i18n đầy đủ. Các mục này được ghi rõ trong UI hoặc không mở nút. Cần thẩm định học thuật, kiểm thử thiết bị thật và chống bot nâng cao trước khi phát hành rộng.
+Chưa có: đánh giá trình độ, thư viện bài phong phú, chấm nói, bài nghe chuyên biệt, grammar/reading, streak server, social login, realtime, Kingdom/War/Guild, và i18n đầy đủ. Các mục này được ghi rõ trong UI hoặc không mở nút. Cần thẩm định học thuật, kiểm thử thiết bị thật và chống bot nâng cao trước khi phát hành rộng.
 
 Chi phí ban đầu: Supabase Free + Vercel Hobby để thử nghiệm cá nhân phi thương mại; kiểm tra điều khoản gói và nâng cấp phù hợp trước vận hành thương mại. Chưa mua domain hoặc dùng dịch vụ trả phí. Không bảo đảm free tier đáp ứng traffic công khai.
 
 Xem [kiến trúc và kế hoạch](docs/ARCHITECTURE.md).
+
+## Cập nhật: khôi phục mật khẩu
+
+1. Đẩy mã nguồn mới lên GitHub và đợi Vercel deploy. Không cần chạy lại migration hoặc seed.
+2. Trong Supabase → Authentication → URL Configuration → Redirect URLs, thêm **địa chỉ đầy đủ** `https://TEN-MIEN-CUA-BAN.vercel.app/auth/callback` (thay bằng Production Domain của bạn). Giữ Site URL là domain gốc. Nếu có domain riêng, dùng domain đó. Mỗi domain dùng để gửi email cần callback tương ứng trong allowlist.
+3. Trong game, mở tài khoản → **Quên mật khẩu?** → nhập email đã đăng ký → gửi.
+4. Mở liên kết trong email bằng **cùng trình duyệt/thiết bị** đã gửi yêu cầu. Luồng PKCE dùng verifier lưu trong cookie; Safari và trình duyệt tích hợp trong ứng dụng email có thể không chia sẻ cookie. Nếu liên kết không hợp lệ, yêu cầu email mới trong Safari rồi mở liên kết mới bằng Safari.
+5. Nhập và xác nhận mật khẩu mới (ít nhất 8 ký tự), lưu; trở về game và đăng nhập bằng mật khẩu mới. Dữ liệu nhân vật và tài nguyên không thay đổi.
+
+Callback `/auth/callback` đổi code lấy session phía server, lưu cookie và chuyển về `/reset-password`; không chấp nhận redirect đích từ tham số người dùng. Trang reset kiểm tra người dùng bằng Supabase Auth trước khi mở form. Người đã đăng nhập cũng có thể đổi mật khẩu của chính mình tại `/reset-password`. Nếu bật Secure Password Change trên Supabase, nhà cung cấp có thể yêu cầu phiên đăng nhập mới; yêu cầu email khôi phục mới khi cần.
+
+Giữ email template **Reset Password** mặc định dùng `{{ .ConfirmationURL }}` cho luồng này. Không thay bằng URL tự chế. Giới hạn gửi email, thời hạn link và chính sách mật khẩu do Supabase Auth quyết định. Không gửi email khôi phục thật trong các test tự động.
