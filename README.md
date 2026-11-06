@@ -18,7 +18,7 @@ Mở http://localhost:3000. Không có Supabase vẫn luyện tập được 8 b
 
 1. Tạo project Supabase Free tại khu vực gần người chơi; bật Email/Password, giữ xác nhận email.
 2. Chạy toàn bộ `supabase/migrations/202611060001_core.sql` bằng SQL Editor, sau đó `supabase/seed.sql`. Migration chạy một lần; seed chạy lại được. Luôn backup trước khi áp dụng lên database có dữ liệu.
-3. Điền `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_ANON_KEY` từ Supabase Project Settings/API vào `.env.local`. Dùng anon/publishable key, **không dùng service role key**.
+3. Điền `NEXT_PUBLIC_SUPABASE_URL` và `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (hoặc `NEXT_PUBLIC_SUPABASE_ANON_KEY` cho cấu hình cũ) từ Supabase Project Settings/API vào `.env.local`. Dùng anon/publishable key, **không dùng service role key**.
 4. Đặt `QUIZ_SIGNING_SECRET` thành chuỗi ngẫu nhiên ít nhất 32 ký tự (dùng cho luyện tập khách). Nếu bỏ trống, tiến trình dùng secret tạm thời; khởi động lại hoặc đổi instance có thể làm hết hiệu lực bài đang học. Production nên cấu hình secret ổn định.
 5. Supabase Authentication/URL Configuration: đặt Site URL thành domain Vercel. Thêm domain localhost vào Redirect URLs khi phát triển. Luồng email xác nhận dùng Site URL, sau đó đăng nhập bằng mật khẩu.
 6. Tạo tài khoản trong giao diện; xác nhận email; đăng nhập; vào Nhân vật lưu tên và nền văn minh; vào Học viện hoàn thành bài. Xem `resource_transactions` để kiểm tra ledger.
